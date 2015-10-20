@@ -1,0 +1,11 @@
+language: go
+
+go: 
+        - tip
+        - release
+
+os:
+        - linux
+        - osx
+
+sudo: false
