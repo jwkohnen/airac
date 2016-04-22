@@ -30,12 +30,12 @@ Licensed under GNU Affero General Public License version 3.0.
 */
 package airac
 
-/* BUG(wjohnen): The two digit year identifier of the FromString method will
+/* BUG(wjkohnen): The two digit year identifier of the FromString method will
 interpret the year as between 1964 and 2063. Other methods than FromString do
 not show this range restriction. This time window is more or less arbitrary and
 may change. */
 
-/* BUG(wjohnen): This package assumes that AIRAC cycles are effective from
+/* BUG(wjkohnen): This package assumes that AIRAC cycles are effective from
 the effective date at 00:00:00 UTC until 27 days later at 23:59:59.999999999
 UTC. That is not correct:
 
