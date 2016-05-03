@@ -30,7 +30,7 @@ func TestFromDate(t *testing.T) {
 		ordinal int
 	}{
 		/*
-			ICAO DOC 8126, 6th edition (2003); Parapraph 2.6.2 b):
+			ICAO DOC 8126, 6th edition (2003); Paragraph 2.6.2 b):
 				the AIRAC effective dates must be in accordance
 				with the predetermined, internationally agreed
 				schedule of effective dates based on an interval of
