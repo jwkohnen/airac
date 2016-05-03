@@ -14,4 +14,7 @@ published in the ICAO Aeronautical Information Services Manual (DOC 8126;
 AN/872; 6th Edition; 2003). Test cases validate documented dates from 1998 until
 2020, including the rare case of a 14th cycle in the year 2020.
 
-Licensed under GNU Affero General Public License version 3.0.
+A Java port is available at (https://github.com/wjkohnen/airac-java/).
+
+Licensed under GNU Affero General Public License version 3.0. Other licenses 
+(free and business friendly) are available on request.
