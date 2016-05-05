@@ -1,6 +1,6 @@
 # airac: a small Go library for calculating aviation AIRAC cycle dates
 
-[![GNU Affero Public License v3](https://www.gnu.org/graphics/agplv3-88x31.png)](https://www.gnu.org/licenses/agpl-3.0.html)
+[![GNU Lesser Public License v3](https://www.gnu.org/graphics/lgplv3-88x31.png)](https://www.gnu.org/licenses/agpl-3.0.html)
 [![GoDoc](https://godoc.org/github.com/wjkohnen/airac?status.svg)](https://godoc.org/github.com/wjkohnen/airac)
 [![Build Status](https://travis-ci.org/wjkohnen/airac.svg?branch=master)](https://travis-ci.org/wjkohnen/airac)
 
@@ -16,5 +16,4 @@ AN/872; 6th Edition; 2003). Test cases validate documented dates from 1998 until
 
 A Java port is available at [github.com/wjkohnen/airac-java/](https://github.com/wjkohnen/airac-java/).
 
-Licensed under GNU Affero General Public License version 3.0. Other licenses 
-(free and business friendly) are available on request.
+Licensed under "business friendly" GNU Lesser General Public License version 3.0. 
