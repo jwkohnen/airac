@@ -3,6 +3,7 @@
 [![GNU Lesser Public License v3](https://www.gnu.org/graphics/lgplv3-88x31.png)](https://www.gnu.org/licenses/lgpl-3.0.html)
 [![GoDoc](https://godoc.org/github.com/wjkohnen/airac?status.svg)](https://godoc.org/github.com/wjkohnen/airac)
 [![Build Status](https://travis-ci.org/wjkohnen/airac.svg?branch=master)](https://travis-ci.org/wjkohnen/airac)
+[![Go Report](https://goreportcard.com/badge/github.com/wjkohnen/airac)](https://goreportcard.com/report/github.com/wjkohnen/airac)
 
 Package airac provides calculations on Aeronautical Information Regulation And
 Control (AIRAC) cycles, i.e. cycle identifiers and effective calendar dates.
