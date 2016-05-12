@@ -4,6 +4,7 @@
 [![GoDoc](https://godoc.org/github.com/wjkohnen/airac?status.svg)](https://godoc.org/github.com/wjkohnen/airac)
 [![Build Status](https://travis-ci.org/wjkohnen/airac.svg?branch=master)](https://travis-ci.org/wjkohnen/airac)
 [![Go Report](https://goreportcard.com/badge/github.com/wjkohnen/airac)](https://goreportcard.com/report/github.com/wjkohnen/airac)
+[![codebeat badge](https://codebeat.co/badges/84112bfa-9f47-4bb0-b741-c56441e9fdde)](https://codebeat.co/projects/github-com-wjkohnen-airac)
 
 Package airac provides calculations on Aeronautical Information Regulation And
 Control (AIRAC) cycles, i.e. cycle identifiers and effective calendar dates.
