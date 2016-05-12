@@ -171,6 +171,9 @@ func TestFromString(t *testing.T) {
 		{"6301", "2063-01-04", 2063, 1, true},
 		{"6313", "2063-12-06", 2063, 13, true},
 		{"9913", "1999-12-30", 1999, 13, true},
+		{"101", "", 0, 0, false},
+		{"160a", "", 0, 0, false},
+		{"1a01", "", 0, 0, false},
 	}
 
 	for _, test := range tests {
@@ -215,10 +218,18 @@ func TestOverflow(t *testing.T) {
 
 func ExampleFromDate() {
 	shalom := time.Date(2012, time.August, 26, 0, 0, 0, 0, time.UTC)
-	fmt.Printf("At %s the current AIRAC cycle was %s.\n",
+	airac := FromDate(shalom)
+
+	fmt.Printf("At %s the current AIRAC cycle was %s.\n\n",
 		shalom.Format("2006-01-02"),
-		FromDate(shalom).LongString(),
+		airac.LongString(),
 	)
+
+	fmt.Printf("Short identifier: %s", airac)
+
 	// Output:
 	// At 2012-08-26 the current AIRAC cycle was 1209 (effective: 2012-08-23; expires: 2012-09-19).
+	//
+	// Short identifier: 1209
+
 }
