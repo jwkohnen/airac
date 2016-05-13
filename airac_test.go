@@ -174,6 +174,11 @@ func TestFromString(t *testing.T) {
 		{"101", "", 0, 0, false},
 		{"160a", "", 0, 0, false},
 		{"1a01", "", 0, 0, false},
+		{"1016", "", 0, 0, false},
+		{"10-1", "", 0, 0, false},
+		{"-101", "", 0, 0, false},
+		{"", "", 0, 0, false},
+		{"nope", "", 0, 0, false},
 	}
 
 	for _, test := range tests {
