@@ -79,11 +79,8 @@ func FromString(yyoo string) (Airac, error) {
 		return -1, err
 	}
 
-	airac := FromDate(time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC))
-	if airac.Year() < year {
-		airac++
-	}
-	airac = airac + Airac(ordinal) - 1
+	lastAiracOfPreviousYear := FromDate(time.Date(year-1, time.December, 31, 0, 0, 0, 0, time.UTC))
+	airac := lastAiracOfPreviousYear + Airac(ordinal)
 
 	if airac.Year() != year {
 		return -1, fmt.Errorf("year %d does not have %d airac cycles", year, ordinal)
