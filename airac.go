@@ -19,6 +19,7 @@ package airac
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -73,7 +74,7 @@ func FromDate(date time.Time) Airac {
 // and 1999 inclusive. AIRAC cycles between "0001" and "6313" are
 // interpreted as AIRAC cycles between the years 2000 and 2063 inclusive.
 func FromString(yyoo string) (Airac, error) {
-	year, ordinal, err := splitIdentifier(yyoo)
+	year, ordinal, err := parseIdentifier(yyoo)
 	if err != nil {
 		return -1, err
 	}
@@ -85,32 +86,27 @@ func FromString(yyoo string) (Airac, error) {
 	airac = airac + Airac(ordinal) - 1
 
 	if airac.Year() != year {
-		return -1, fmt.Errorf("year %d does not have %d cycles", year, ordinal)
+		return -1, fmt.Errorf("year %d does not have %d airac cycles", year, ordinal)
 	}
 
 	return airac, nil
 }
 
-func splitIdentifier(yyoo string) (year, ordinal int, err error) {
-	if len(yyoo) != 4 {
-		return -1, -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
+func parseIdentifier(yyoo string) (year, ordinal int, err error) {
+	m := identifierRegex.FindStringSubmatch(yyoo)
+	if m == nil {
+		return -1, -1, fmt.Errorf("illegal airac identifier: %s", yyoo)
 	}
+	year, _ = strconv.Atoi(m[1])
+	ordinal, _ = strconv.Atoi(m[2])
 
-	var yy int
-	if yy, err = strconv.Atoi(yyoo[:2]); err != nil {
-		return -1, -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
-	} else if yy < 64 {
-		year = 2000 + yy
+	if year > 63 {
+		year = 1900 + year
 	} else {
-		year = 1900 + yy
+		year = 2000 + year
 	}
 
-	ordinal, err = strconv.Atoi(yyoo[2:])
-	if err != nil || ordinal < 1 || ordinal > 14 {
-		return -1, -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
-	}
-
-	return year, ordinal, err
+	return year, ordinal, nil
 }
 
 const (
@@ -118,6 +114,7 @@ const (
 )
 
 var (
-	epoch         = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
-	durationCycle = 28 * 24 * time.Hour
+	epoch           = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
+	durationCycle   = 28 * 24 * time.Hour
+	identifierRegex = regexp.MustCompile(`^(\d{2})(\d{2})$`)
 )
