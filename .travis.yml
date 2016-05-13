@@ -2,7 +2,7 @@ language: go
 
 go: 
         - tip
-        - release
+        - 1.6.2
 
 os:
         - linux
