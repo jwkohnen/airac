@@ -73,22 +73,9 @@ func FromDate(date time.Time) Airac {
 // and 1999 inclusive. AIRAC cycles between "0001" and "6313" are
 // interpreted as AIRAC cycles between the years 2000 and 2063 inclusive.
 func FromString(yyoo string) (Airac, error) {
-	if len(yyoo) != 4 {
-		return -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
-	}
-
-	var year int
-	if yy, erry := strconv.Atoi(yyoo[:2]); erry != nil {
-		return -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
-	} else if yy < 64 {
-		year = 2000 + yy
-	} else {
-		year = 1900 + yy
-	}
-
-	ordinal, erro := strconv.Atoi(yyoo[2:])
-	if erro != nil || ordinal < 1 || ordinal > 14 {
-		return -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
+	year, ordinal, err := splitIdentifier(yyoo)
+	if err != nil {
+		return -1, err
 	}
 
 	airac := FromDate(time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC))
@@ -102,6 +89,28 @@ func FromString(yyoo string) (Airac, error) {
 	}
 
 	return airac, nil
+}
+
+func splitIdentifier(yyoo string) (year, ordinal int, err error) {
+	if len(yyoo) != 4 {
+		return -1, -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
+	}
+
+	var yy int
+	if yy, err = strconv.Atoi(yyoo[:2]); err != nil {
+		return -1, -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
+	} else if yy < 64 {
+		year = 2000 + yy
+	} else {
+		year = 1900 + yy
+	}
+
+	ordinal, err = strconv.Atoi(yyoo[2:])
+	if err != nil || ordinal < 1 || ordinal > 14 {
+		return -1, -1, fmt.Errorf("illegal AIRAC identifier: %v", yyoo)
+	}
+
+	return year, ordinal, err
 }
 
 const (
