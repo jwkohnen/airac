@@ -88,6 +88,17 @@ func FromString(yyoo string) (Airac, error) {
 	return airac, nil
 }
 
+// FromStringMust returns an AIRAC cycle that matches the identifier <yyoo>
+// like FromString, but does not return an error. If there is an error it will
+// panic instead.
+func FromStringMust(yyoo string) Airac {
+	airac, err := FromString(yyoo)
+	if err != nil {
+		panic(err)
+	}
+	return airac
+}
+
 func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 	m := identifierRegex.FindStringSubmatch(yyoo)
 	if m == nil {
@@ -104,6 +115,20 @@ func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 
 	return year, ordinal, nil
 }
+
+// ByChrono is an []Airac wrapper, that satisfies sort.Interface and can be used
+// to chronologically sort AIRAC instances.
+type ByChrono []Airac
+
+// Len ist the number of elementes in the collection.
+func (c ByChrono) Len() int { return len(c) }
+
+// Less reports wether the element with
+// index i should sort before the element with index j.
+func (c ByChrono) Less(i, j int) bool { return c[i] < c[j] }
+
+// Swap swaps the elements with indexes i and j.
+func (c ByChrono) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
 
 const (
 	format = "2006-01-02"

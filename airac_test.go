@@ -18,6 +18,7 @@ package airac
 
 import (
 	"fmt"
+	"sort"
 	"testing"
 	"time"
 )
@@ -247,4 +248,24 @@ func ExampleFromDate() {
 	//
 	// Short identifier: 1209
 
+}
+
+func ExampleByChrono() {
+	airacs := []Airac{
+		FromStringMust("1213"),
+		FromStringMust("1201"),
+		FromStringMust("1207"),
+	}
+	fmt.Println("Not Sorted:    ", airacs)
+
+	sort.Sort(ByChrono(airacs))
+	fmt.Println("Sorted:        ", airacs)
+
+	sort.Sort(sort.Reverse(ByChrono(airacs)))
+	fmt.Println("Sorted reverse:", airacs)
+
+	// Output:
+	// Not Sorted:     [1213 1201 1207]
+	// Sorted:         [1201 1207 1213]
+	// Sorted reverse: [1213 1207 1201]
 }
