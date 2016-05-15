@@ -25,7 +25,7 @@ published in the ICAO Aeronautical Information Services Manual (DOC 8126;
 AN/872; 6th Edition; 2003). Test cases validate documented dates from 1998 until
 2020, including the rare case of a 14th cycle in the year 2020.
 
-Licensed under GNU Lesser General Public License version 3.0.
+Licensed under the Apache License, Version 2.0.
 */
 package airac
 
