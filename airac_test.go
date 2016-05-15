@@ -1,18 +1,17 @@
 /*
- * Copyright (C) 2015 Wolfgang Johannes Kohnen <wjkohnen@users.noreply.github.com>
+ * Copyright (c) 2016 Wolfgang Johannes Kohnen <wjkohnen@users.noreply.github.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package airac
@@ -110,6 +109,8 @@ func TestFromDate(t *testing.T) {
 		{"1964-01-16", 1964, 1},
 		{"1901-01-10", 1901, 1},
 		{"1998-12-31", 1998, 14},
+
+		{"1963-12-31", 1963, 13},
 	}
 
 	for _, test := range airacTests {
@@ -217,6 +218,15 @@ func TestOverflow(t *testing.T) {
 			t.Errorf("Time difference between cycle (%s) %d/%02d and (%s) %d/%02d wrong, want 28 days, got %s.",
 				a.LongString(), a.Year(), a.Ordinal(), prev.LongString(), prev.Year(), prev.Ordinal(), diff)
 			break
+		}
+	}
+}
+
+func TestLastAiracOfYear(t *testing.T) {
+	for year := epoch.Year(); year < 2193; year++ {
+		airac := FromDate(time.Date(year, time.December, 31, 0, 0, 0, 0, time.UTC))
+		if airac.Year() != year {
+			t.Errorf("want %d, got %d", year, airac.Year())
 		}
 	}
 }
