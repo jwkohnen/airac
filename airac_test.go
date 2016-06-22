@@ -209,6 +209,25 @@ func TestFromString(t *testing.T) {
 	}
 }
 
+func TestFromStringMust(t *testing.T) {
+	got := FromStringMust("1201")
+	want := "1201"
+	if got.String() != want {
+		t.Errorf("Got %s, want %s", got, want)
+	}
+
+	func() {
+		invalid := "1614"
+		defer func() {
+			if r := recover(); r == nil {
+				t.Errorf("TestFromStringMust(\"%s\") should have paniced, but didn't.", invalid)
+			}
+		}()
+
+		FromStringMust(invalid)
+	}()
+}
+
 func TestOverflow(t *testing.T) {
 	// there will be an overflow after April 4th, 2193
 	last := time.Date(2193, time.April, 4, 0, 0, 0, 0, time.UTC)
