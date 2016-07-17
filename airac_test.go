@@ -174,6 +174,7 @@ func TestFromString(t *testing.T) {
 		{"6313", "2063-12-06", 2063, 13, true},
 		{"9913", "1999-12-30", 1999, 13, true},
 		{"101", "", 0, 0, false},
+		{"0000", "", 0, 0, false},
 		{"160a", "", 0, 0, false},
 		{"1a01", "", 0, 0, false},
 		{"1016", "", 0, 0, false},
@@ -194,6 +195,7 @@ func TestFromString(t *testing.T) {
 			continue
 		}
 		if !test.ok && err != nil {
+			t.Logf("Test string \"%s\" rightfully yields error: %v", test.airac, err)
 			continue
 		}
 		wantEffective, err := time.Parse(format, test.effective)
@@ -209,6 +211,18 @@ func TestFromString(t *testing.T) {
 	}
 }
 
+func TestFromStringZeroOrdinal(t *testing.T) {
+	for i := 0; i < 100; i++ {
+		s := fmt.Sprintf("%02d00", i)
+		got, err := FromString(s)
+		if err == nil {
+			t.Errorf("Identifier %s yields AIRAC cycle %s.", s, got)
+		} else {
+			t.Logf("Identifier %s rightfully returns error: %v", s, err)
+		}
+	}
+}
+
 func TestFromStringMust(t *testing.T) {
 	got := FromStringMust("1201")
 	want := "1201"
@@ -219,8 +233,11 @@ func TestFromStringMust(t *testing.T) {
 	func() {
 		invalid := "1614"
 		defer func() {
-			if r := recover(); r == nil {
+			r := recover()
+			if r == nil {
 				t.Errorf("TestFromStringMust(\"%s\") should have paniced, but didn't.", invalid)
+			} else {
+				t.Logf("TestFromStringMust(\"%s\") rightfully paniced: %v", invalid, r)
 			}
 		}()
 
@@ -267,6 +284,18 @@ func ExampleFromDate() {
 	//
 	// Short identifier: 1209
 
+}
+
+func BenchmarkFromString(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		FromString("2014")
+	}
+}
+
+func BenchmarkFromDate(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		FromDate(time.Now())
+	}
 }
 
 func ExampleByChrono() {

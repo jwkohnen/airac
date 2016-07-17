@@ -120,7 +120,7 @@ func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 // to chronologically sort AIRAC instances.
 type ByChrono []Airac
 
-// Len ist the number of elementes in the collection.
+// Len ist the number of elements in the collection.
 func (c ByChrono) Len() int { return len(c) }
 
 // Less reports wether the element with
