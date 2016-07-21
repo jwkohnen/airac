@@ -18,7 +18,6 @@ package airac
 
 import (
 	"fmt"
-	"regexp"
 	"strconv"
 	"time"
 )
@@ -82,7 +81,7 @@ func FromString(yyoo string) (Airac, error) {
 	airac := lastAiracOfPreviousYear + Airac(ordinal)
 
 	if airac.Year() != year {
-		return -1, fmt.Errorf("year %d does not have %d airac cycles", year, ordinal)
+		return -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
 
 	return airac, nil
@@ -100,12 +99,15 @@ func FromStringMust(yyoo string) Airac {
 }
 
 func parseIdentifier(yyoo string) (year, ordinal int, err error) {
-	m := identifierRegex.FindStringSubmatch(yyoo)
-	if m == nil {
-		return -1, -1, fmt.Errorf("illegal airac identifier: %s", yyoo)
+	if len(yyoo) != 4 {
+		return -1, -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
-	year, _ = strconv.Atoi(m[1])
-	ordinal, _ = strconv.Atoi(m[2])
+	x, err := strconv.Atoi(yyoo)
+	if err != nil {
+		return -1, -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+	}
+	year = x / 100
+	ordinal = x % 100
 
 	if year > 63 {
 		year = 1900 + year
@@ -135,7 +137,6 @@ const (
 )
 
 var (
-	epoch           = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
-	durationCycle   = 28 * 24 * time.Hour
-	identifierRegex = regexp.MustCompile(`^(\d{2})(\d{2})$`)
+	epoch         = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
+	durationCycle = 28 * 24 * time.Hour
 )
