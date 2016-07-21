@@ -173,6 +173,7 @@ func TestFromString(t *testing.T) {
 		{"6301", "2063-01-04", 2063, 1, true},
 		{"6313", "2063-12-06", 2063, 13, true},
 		{"9913", "1999-12-30", 1999, 13, true},
+		{"09913", "", 0, 0, false},
 		{"101", "", 0, 0, false},
 		{"0000", "", 0, 0, false},
 		{"160a", "", 0, 0, false},
@@ -182,6 +183,14 @@ func TestFromString(t *testing.T) {
 		{"-101", "", 0, 0, false},
 		{"", "", 0, 0, false},
 		{"nope", "", 0, 0, false},
+		{"0", "", 0, 0, false},
+		{"-0", "", 0, 0, false},
+		{"-1", "", 0, 0, false},
+		{"11", "", 0, 0, false},
+		{"011", "", 0, 0, false},
+		{"a", "", 0, 0, false},
+		{"aa", "", 0, 0, false},
+		{"", "", 0, 0, false},
 	}
 
 	for _, test := range tests {
@@ -288,7 +297,7 @@ func ExampleFromDate() {
 
 func BenchmarkFromString(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		FromString("2014")
+		FromStringMust("2014")
 	}
 }
 
