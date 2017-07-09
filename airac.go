@@ -37,7 +37,7 @@ func (a Airac) Ordinal() int {
 
 // Effective returns the effective date of this AIRAC cycle.
 func (a Airac) Effective() time.Time {
-	return epoch.Add(time.Duration(a) * durationCycle)
+	return epoch.Add(time.Duration(a) * cycleDuration)
 }
 
 // LongString returns a verbose representation of this AIRAC cycle.
@@ -61,7 +61,7 @@ func (a Airac) String() string {
 // internal epoch (1901-01-10) may return wrong data. The upper limit is
 // year 2192.
 func FromDate(date time.Time) Airac {
-	a := date.Sub(epoch) / durationCycle
+	a := date.Sub(epoch) / cycleDuration
 	return Airac(a)
 }
 
@@ -133,10 +133,10 @@ func (c ByChrono) Less(i, j int) bool { return c[i] < c[j] }
 func (c ByChrono) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
 
 const (
-	format = "2006-01-02"
+	format                      = "2006-01-02"
+	cycleDuration time.Duration = 24192e11 // 4 weeks
 )
 
 var (
-	epoch         = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
-	durationCycle = 28 * 24 * time.Hour
+	epoch = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
 )
