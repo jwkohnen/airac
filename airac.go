@@ -23,7 +23,7 @@ import (
 )
 
 // Airac represents an AIRAC cycle.
-type Airac int
+type Airac uint16
 
 // Year returns the year for this AIRAC cycle's identifier.
 func (a Airac) Year() int {
@@ -74,14 +74,14 @@ func FromDate(date time.Time) Airac {
 func FromString(yyoo string) (Airac, error) {
 	year, ordinal, err := parseIdentifier(yyoo)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
 	lastAiracOfPreviousYear := FromDate(time.Date(year-1, time.December, 31, 0, 0, 0, 0, time.UTC))
 	airac := lastAiracOfPreviousYear + Airac(ordinal)
 
 	if airac.Year() != year {
-		return -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
 
 	return airac, nil
@@ -100,11 +100,11 @@ func FromStringMust(yyoo string) Airac {
 
 func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 	if len(yyoo) != 4 {
-		return -1, -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
 	x, err := strconv.Atoi(yyoo)
 	if err != nil {
-		return -1, -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
 	year = x / 100
 	ordinal = x % 100
