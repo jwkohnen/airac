@@ -23,7 +23,7 @@ import (
 )
 
 // Airac represents an AIRAC cycle.
-type Airac int
+type Airac uint16
 
 // Year returns the year for this AIRAC cycle's identifier.
 func (a Airac) Year() int {
@@ -37,7 +37,7 @@ func (a Airac) Ordinal() int {
 
 // Effective returns the effective date of this AIRAC cycle.
 func (a Airac) Effective() time.Time {
-	return epoch.Add(time.Duration(a) * durationCycle)
+	return epoch.Add(time.Duration(a) * cycleDuration)
 }
 
 // LongString returns a verbose representation of this AIRAC cycle.
@@ -61,7 +61,7 @@ func (a Airac) String() string {
 // internal epoch (1901-01-10) may return wrong data. The upper limit is
 // year 2192.
 func FromDate(date time.Time) Airac {
-	a := date.Sub(epoch) / durationCycle
+	a := date.Sub(epoch) / cycleDuration
 	return Airac(a)
 }
 
@@ -74,14 +74,14 @@ func FromDate(date time.Time) Airac {
 func FromString(yyoo string) (Airac, error) {
 	year, ordinal, err := parseIdentifier(yyoo)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
 	lastAiracOfPreviousYear := FromDate(time.Date(year-1, time.December, 31, 0, 0, 0, 0, time.UTC))
 	airac := lastAiracOfPreviousYear + Airac(ordinal)
 
 	if airac.Year() != year {
-		return -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
 
 	return airac, nil
@@ -100,11 +100,11 @@ func FromStringMust(yyoo string) Airac {
 
 func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 	if len(yyoo) != 4 {
-		return -1, -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
 	x, err := strconv.Atoi(yyoo)
 	if err != nil {
-		return -1, -1, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
 	year = x / 100
 	ordinal = x % 100
@@ -133,10 +133,10 @@ func (c ByChrono) Less(i, j int) bool { return c[i] < c[j] }
 func (c ByChrono) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
 
 const (
-	format = "2006-01-02"
+	format                      = "2006-01-02"
+	cycleDuration time.Duration = 24192e11 // 4 weeks
 )
 
 var (
-	epoch         = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
-	durationCycle = 28 * 24 * time.Hour
+	epoch = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
 )
