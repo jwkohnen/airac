@@ -102,19 +102,15 @@ func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 	if len(yyoo) != 4 {
 		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
-	x, err := strconv.Atoi(yyoo)
+	yyooInt, err := strconv.Atoi(yyoo)
 	if err != nil {
 		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
 	}
-	year = x / 100
-	ordinal = x % 100
 
-	if year > 63 {
-		year = 1900 + year
-	} else {
-		year = 2000 + year
+	year, ordinal = (yyooInt/100)+1900, yyooInt%100
+	if year <= 1963 {
+		year += 100
 	}
-
 	return year, ordinal, nil
 }
 
