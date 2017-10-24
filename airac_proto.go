@@ -18,21 +18,23 @@
 
 package airac
 
-//go:generate protoc --go_out=./ airac.proto
+//go:generate protoc --go_out=./ proto/airac.proto
 
 import (
 	"math"
+
+	"github.com/wjkohnen/airac/proto"
 )
 
 // FromProto converts an AIRAC protobuffer message to an AIRAC value.
-func FromProto(a AiracMessage) Airac {
+func FromProto(a proto.AiracMessage) Airac {
 	if a.Airac19010110 > math.MaxUint16 {
 		return 0
 	}
 	return Airac(a.Airac19010110)
 }
 
-// ToProto converts an AIRAC value to an AIRAC protobuffer message.
-func (a Airac) ToProto() AiracMessage {
-	return AiracMessage{uint32(a)}
+// Proto converts an AIRAC value to an AIRAC protobuffer message.
+func (a Airac) Proto() proto.AiracMessage {
+	return proto.AiracMessage{uint32(a)}
 }

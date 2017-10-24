@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 syntax="proto3";
-package airac;
+package proto;
 
 message AiracMessage {
  uint32 airac19010110 = 1;
