@@ -162,7 +162,7 @@ func TestFromString(t *testing.T) {
 		effective string
 		year      int
 		ordinal   int
-		ok        bool
+		valid     bool
 	}{
 		{"2014", "2020-12-31", 2020, 14, true},
 		{"1511", "2015-10-15", 2015, 11, true},
@@ -195,18 +195,19 @@ func TestFromString(t *testing.T) {
 
 	for _, test := range tests {
 		got, err := FromString(test.airac)
-		if test.ok && err != nil {
+		if test.valid && err != nil {
 			t.Errorf("AIRAC \"%v\" did not parse: %v", test.airac, err)
 			continue
 		}
-		if !test.ok && err == nil {
+		if !test.valid && err == nil {
 			t.Errorf("AIRAC \"%v\" parsed to %v, but should have raised an error!!", test.airac, got)
 			continue
 		}
-		if !test.ok && err != nil {
+		if !test.valid && err != nil {
 			t.Logf("Test string \"%s\" rightfully yields error: %v", test.airac, err)
 			continue
 		}
+
 		wantEffective, err := time.Parse(format, test.effective)
 		if err != nil {
 			t.Fatalf("test case broken: %v", err)
@@ -226,9 +227,9 @@ func TestFromStringZeroOrdinal(t *testing.T) {
 		got, err := FromString(s)
 		if err == nil {
 			t.Errorf("Identifier %s yields AIRAC cycle %s.", s, got)
-		} else {
-			t.Logf("Identifier %s rightfully returns error: %v", s, err)
+			continue
 		}
+		t.Logf("Identifier %s rightfully returns error: %v", s, err)
 	}
 }
 

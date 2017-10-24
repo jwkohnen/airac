@@ -21,11 +21,13 @@ package airac
 import (
 	"math"
 	"testing"
+
+	"github.com/wjkohnen/airac/proto"
 )
 
 func TestProto(t *testing.T) {
 	for want := Airac(0); want < FromStringMust("9213"); want++ {
-		p := want.ToProto()
+		p := want.Proto()
 		got := FromProto(p)
 		if want != got {
 			t.Errorf("Want %v, got %x", want, got)
@@ -35,7 +37,7 @@ func TestProto(t *testing.T) {
 
 func TestProtoOverflow(t *testing.T) {
 	want := Airac(0)
-	p := AiracMessage{math.MaxUint16 + 1}
+	p := proto.AiracMessage{math.MaxUint16 + 1}
 	got := FromProto(p)
 	if got != want {
 		t.Errorf("Want %s, got %s", want, got)
