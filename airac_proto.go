@@ -27,14 +27,14 @@ import (
 )
 
 // FromProto converts an AIRAC protobuffer message to an AIRAC value.
-func FromProto(a proto.AiracMessage) Airac {
+func FromProto(a proto.AiracMessage) AIRAC {
 	if a.Airac19010110 > math.MaxUint16 {
 		return 0
 	}
-	return Airac(a.Airac19010110)
+	return AIRAC(a.Airac19010110)
 }
 
 // Proto converts an AIRAC value to an AIRAC protobuffer message.
-func (a Airac) Proto() proto.AiracMessage {
+func (a AIRAC) Proto() proto.AiracMessage {
 	return proto.AiracMessage{uint32(a)}
 }

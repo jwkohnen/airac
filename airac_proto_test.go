@@ -26,7 +26,7 @@ import (
 )
 
 func TestProto(t *testing.T) {
-	for want := Airac(0); want < FromStringMust("9213"); want++ {
+	for want := AIRAC(0); want < FromStringMust("9213"); want++ {
 		p := want.Proto()
 		got := FromProto(p)
 		if want != got {
@@ -36,7 +36,7 @@ func TestProto(t *testing.T) {
 }
 
 func TestProtoOverflow(t *testing.T) {
-	want := Airac(0)
+	want := AIRAC(0)
 	p := proto.AiracMessage{math.MaxUint16 + 1}
 	got := FromProto(p)
 	if got != want {

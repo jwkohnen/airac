@@ -258,7 +258,7 @@ func TestFromStringMust(t *testing.T) {
 func TestOverflow(t *testing.T) {
 	// there will be an overflow after April 4th, 2193
 	last := time.Date(2193, time.April, 4, 0, 0, 0, 0, time.UTC)
-	for a := Airac(1); a.Effective().Before(last); a++ {
+	for a := AIRAC(1); a.Effective().Before(last); a++ {
 		prev := a - 1
 		diff := a.Effective().Sub(prev.Effective())
 		if diff != 28*24*time.Hour {
@@ -308,8 +308,17 @@ func BenchmarkFromDate(b *testing.B) {
 	}
 }
 
+func TestTypeAlias(t *testing.T) {
+	t.Parallel()
+	lower := Airac(42)
+	upper := AIRAC(42)
+	if lower != upper {
+		t.Error("Old type does not equal new type!")
+	}
+}
+
 func ExampleByChrono() {
-	airacs := []Airac{
+	airacs := []AIRAC{
 		FromStringMust("1213"),
 		FromStringMust("1201"),
 		FromStringMust("1207"),

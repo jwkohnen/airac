@@ -33,30 +33,32 @@ var (
 	epoch = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
 )
 
-// Airac represents an AIRAC cycle.
-type Airac uint16
+// AIRAC represents an Aeronautical Information Regulation And Control (AIRAC) cycle.
+type AIRAC uint16
+
+type Airac = AIRAC
 
 // Effective returns the effective date of this AIRAC cycle.
-func (a Airac) Effective() time.Time {
+func (a AIRAC) Effective() time.Time {
 	return epoch.Add(time.Duration(a) * cycleDuration)
 }
 
 // Year returns the year for this AIRAC cycle's identifier.
-func (a Airac) Year() int {
+func (a AIRAC) Year() int {
 	return a.Effective().Year()
 }
 
 // Ordinal returns the ordinal for this AIRAC cycle's identifier.
-func (a Airac) Ordinal() int {
+func (a AIRAC) Ordinal() int {
 	return (a.Effective().YearDay()-1)/28 + 1
 }
 
 // FromDate returns the AIRAC cycle that occurred at date. A date before the
 // internal epoch (1901-01-10) may return wrong data. The upper limit is
 // year 2192.
-func FromDate(date time.Time) Airac {
+func FromDate(date time.Time) AIRAC {
 	a := date.Sub(epoch) / cycleDuration
-	return Airac(a)
+	return AIRAC(a)
 }
 
 // FromString returns an AIRAC cycle that matches the identifier <yyoo>,
@@ -65,14 +67,14 @@ func FromDate(date time.Time) Airac {
 // "6401" and "9913" are interpreted as AIRAC cycles between the years 1964
 // and 1999 inclusive. AIRAC cycles between "0001" and "6313" are
 // interpreted as AIRAC cycles between the years 2000 and 2063 inclusive.
-func FromString(yyoo string) (Airac, error) {
+func FromString(yyoo string) (AIRAC, error) {
 	year, ordinal, err := parseIdentifier(yyoo)
 	if err != nil {
 		return 0, err
 	}
 
 	lastAiracOfPreviousYear := FromDate(time.Date(year-1, time.December, 31, 0, 0, 0, 0, time.UTC))
-	airac := lastAiracOfPreviousYear + Airac(ordinal)
+	airac := lastAiracOfPreviousYear + AIRAC(ordinal)
 
 	if airac.Year() != year {
 		return 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
@@ -101,7 +103,7 @@ func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 // FromStringMust returns an AIRAC cycle that matches the identifier <yyoo>
 // like FromString, but does not return an error. If there is an error it will
 // panic instead.
-func FromStringMust(yyoo string) Airac {
+func FromStringMust(yyoo string) AIRAC {
 	airac, err := FromString(yyoo)
 	if err != nil {
 		panic(err)
@@ -110,13 +112,13 @@ func FromStringMust(yyoo string) Airac {
 }
 
 // String returns a short representation of this AIRAC cycle. "YYOO"
-func (a Airac) String() string {
+func (a AIRAC) String() string {
 	return fmt.Sprintf("%02d%02d", a.Year()%100, a.Ordinal())
 }
 
 // LongString returns a verbose representation of this AIRAC cycle.
 // "YYOO (effective: YYYY-MM-DD; expires: YYYY-MM-DD)"
-func (a Airac) LongString() string {
+func (a AIRAC) LongString() string {
 	n := a + 1
 	return fmt.Sprintf("%02d%02d (effective: %s; expires: %s)",
 		a.Year()%100,
@@ -126,14 +128,14 @@ func (a Airac) LongString() string {
 	)
 }
 
-// ByChrono is an []Airac wrapper, that satisfies sort.Interface and can be used
+// ByChrono is an []AIRAC wrapper, that satisfies sort.Interface and can be used
 // to chronologically sort AIRAC instances.
-type ByChrono []Airac
+type ByChrono []AIRAC
 
 // Len ist the number of elements in the collection.
 func (c ByChrono) Len() int { return len(c) }
 
-// Less reports wether the element with
+// Less reports whether the element with
 // index i should sort before the element with index j.
 func (c ByChrono) Less(i, j int) bool { return c[i] < c[j] }
 
