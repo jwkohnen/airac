@@ -19,11 +19,13 @@ package airac
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"testing"
 	"time"
 )
 
 func TestFromDate(t *testing.T) {
+	t.Parallel()
 	var airacTests = []struct {
 		date    string
 		year    int
@@ -115,16 +117,21 @@ func TestFromDate(t *testing.T) {
 	}
 
 	for _, test := range airacTests {
-		tdate, _ := time.Parse(format, test.date)
-		got := FromDate(tdate)
-		if got.Year() != test.year || got.Ordinal() != test.ordinal {
-			t.Errorf("Date %s (%s): want: %02d%02d, got: %s",
-				test.date, tdate.Weekday(), test.year%100, test.ordinal, got.String())
-		}
+		test := test
+		t.Run(test.date, func(t *testing.T) {
+			t.Parallel()
+			tdate, _ := time.Parse(format, test.date)
+			got := FromDate(tdate)
+			if got.Year() != test.year || got.Ordinal() != test.ordinal {
+				t.Errorf("Date %s (%s): want: %02d%02d, got: %s",
+					test.date, tdate.Weekday(), test.year%100, test.ordinal, got.String())
+			}
+		})
 	}
 }
 
 func TestNextPrevious(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		date        string
 		prevyear    int
@@ -157,6 +164,7 @@ func TestNextPrevious(t *testing.T) {
 }
 
 func TestFromString(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		airac     string
 		effective string
@@ -193,47 +201,57 @@ func TestFromString(t *testing.T) {
 		{"", "", 0, 0, false},
 	}
 
-	for _, test := range tests {
-		got, err := FromString(test.airac)
-		if test.valid && err != nil {
-			t.Errorf("AIRAC \"%v\" did not parse: %v", test.airac, err)
-			continue
-		}
-		if !test.valid && err == nil {
-			t.Errorf("AIRAC \"%v\" parsed to %v, but should have raised an error!!", test.airac, got)
-			continue
-		}
-		if !test.valid && err != nil {
-			t.Logf("Test string \"%s\" rightfully yields error: %v", test.airac, err)
-			continue
-		}
+	for i, test := range tests {
+		i, test := i, test
+		t.Run(fmt.Sprintf("%02d_\"%s\"", i, test.airac), func(t *testing.T) {
+			t.Parallel()
+			got, err := FromString(test.airac)
+			if test.valid && err != nil {
+				t.Errorf("AIRAC \"%v\" did not parse: %v", test.airac, err)
+				return
+			}
+			if !test.valid && err == nil {
+				t.Errorf("AIRAC \"%v\" parsed to %v, but should have raised an error!!", test.airac, got)
+				return
+			}
+			if !test.valid && err != nil {
+				t.Logf("Test string \"%s\" rightfully yields error: %v", test.airac, err)
+				return
+			}
 
-		wantEffective, err := time.Parse(format, test.effective)
-		if err != nil {
-			t.Fatalf("test case broken: %v", err)
-		}
-		if got.Year() != test.year ||
-			got.Ordinal() != test.ordinal ||
-			!got.Effective().Equal(wantEffective) {
-			t.Errorf("AIRAC \"%v\", want %02d%02d (eff: %v), got %v",
-				test.airac, test.year%100, test.ordinal, test.effective, got.LongString())
-		}
+			wantEffective, err := time.Parse(format, test.effective)
+			if err != nil {
+				t.Fatalf("test case broken: %v", err)
+			}
+			if got.Year() != test.year ||
+				got.Ordinal() != test.ordinal ||
+				!got.Effective().Equal(wantEffective) {
+				t.Errorf("AIRAC \"%v\", want %02d%02d (eff: %v), got %v",
+					test.airac, test.year%100, test.ordinal, test.effective, got.LongString())
+			}
+		})
 	}
 }
 
 func TestFromStringZeroOrdinal(t *testing.T) {
+	t.Parallel()
 	for i := 0; i < 100; i++ {
-		s := fmt.Sprintf("%02d00", i)
-		got, err := FromString(s)
-		if err == nil {
-			t.Errorf("Identifier %s yields AIRAC cycle %s.", s, got)
-			continue
-		}
-		t.Logf("Identifier %s rightfully returns error: %v", s, err)
+		i := i
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			t.Parallel()
+			s := fmt.Sprintf("%02d00", i)
+			got, err := FromString(s)
+			if err == nil {
+				t.Errorf("Identifier %s yields AIRAC cycle %s.", s, got)
+				return
+			}
+			t.Logf("Identifier %s rightfully returns error: %v", s, err)
+		})
 	}
 }
 
 func TestFromStringMust(t *testing.T) {
+	t.Parallel()
 	got := FromStringMust("1201")
 	want := "1201"
 	if got.String() != want {
@@ -256,6 +274,7 @@ func TestFromStringMust(t *testing.T) {
 }
 
 func TestOverflow(t *testing.T) {
+	t.Parallel()
 	// there will be an overflow after April 4th, 2193
 	last := time.Date(2193, time.April, 4, 0, 0, 0, 0, time.UTC)
 	for a := AIRAC(1); a.Effective().Before(last); a++ {
@@ -270,11 +289,16 @@ func TestOverflow(t *testing.T) {
 }
 
 func TestLastAiracOfYear(t *testing.T) {
+	t.Parallel()
 	for year := epoch.Year(); year < 2193; year++ {
-		airac := FromDate(time.Date(year, time.December, 31, 0, 0, 0, 0, time.UTC))
-		if airac.Year() != year {
-			t.Errorf("want %d, got %d", year, airac.Year())
-		}
+		year := year
+		t.Run(strconv.Itoa(year), func(t *testing.T) {
+			t.Parallel()
+			airac := FromDate(time.Date(year, time.December, 31, 0, 0, 0, 0, time.UTC))
+			if airac.Year() != year {
+				t.Errorf("want %d, got %d", year, airac.Year())
+			}
+		})
 	}
 }
 
