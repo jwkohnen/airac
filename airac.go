@@ -25,8 +25,8 @@ import (
 )
 
 const (
-	format                      = "2006-01-02"
-	cycleDuration time.Duration = 24192e11 // 4 weeks
+	format        = "2006-01-02"
+	cycleDuration = 24192e11 // 4 weeks
 )
 
 var (
