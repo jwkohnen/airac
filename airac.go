@@ -77,7 +77,7 @@ func FromString(yyoo string) (AIRAC, error) {
 	airac := lastAiracOfPreviousYear + AIRAC(ordinal)
 
 	if airac.Year() != year {
-		return 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, fmt.Errorf("illegal AIRAC id %q", yyoo)
 	}
 
 	return airac, nil
@@ -86,11 +86,11 @@ func FromString(yyoo string) (AIRAC, error) {
 func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 	yyoo = strings.TrimSpace(yyoo)
 	if len(yyoo) != 4 {
-		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, 0, fmt.Errorf("illegal AIRAC id %q", yyoo)
 	}
 	yyooInt, err := strconv.Atoi(yyoo)
 	if err != nil {
-		return 0, 0, fmt.Errorf("illegal AIRAC id \"%s\"", yyoo)
+		return 0, 0, fmt.Errorf("illegal AIRAC id %q", yyoo)
 	}
 
 	year, ordinal = (yyooInt/100)+1900, yyooInt%100
