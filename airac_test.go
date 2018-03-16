@@ -116,15 +116,15 @@ func TestFromDate(t *testing.T) {
 		{"1963-12-31", 1963, 13},
 	}
 
-	for _, test := range airacTests {
-		test := test
-		t.Run(test.date, func(t *testing.T) {
+	for _, testc := range airacTests {
+		testc := testc
+		t.Run(testc.date, func(t *testing.T) {
 			t.Parallel()
-			tdate, _ := time.Parse(format, test.date)
+			tdate, _ := time.Parse(format, testc.date)
 			got := FromDate(tdate)
-			if got.Year() != test.year || got.Ordinal() != test.ordinal {
+			if got.Year() != testc.year || got.Ordinal() != testc.ordinal {
 				t.Errorf("Date %s (%s): want: %02d%02d, got: %s",
-					test.date, tdate.Weekday(), test.year%100, test.ordinal, got.String())
+					testc.date, tdate.Weekday(), testc.year%100, testc.ordinal, got.String())
 			}
 		})
 	}
@@ -132,7 +132,7 @@ func TestFromDate(t *testing.T) {
 
 func TestNextPrevious(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testt := []struct {
 		date        string
 		prevyear    int
 		prevordinal int
@@ -142,30 +142,30 @@ func TestNextPrevious(t *testing.T) {
 		{"2006-01-20", 2005, 13, 2006, 2},
 		{"2021-01-01", 2020, 13, 2021, 1},
 	}
-	for _, test := range tests {
-		tdate, _ := time.Parse(format, test.date)
+	for _, testc := range testt {
+		tdate, _ := time.Parse(format, testc.date)
 		got := FromDate(tdate)
 		gotPrev := got - 1
 		gotNext := got + 1
 
-		if gotPrev.Year() != test.prevyear {
-			t.Errorf("got %v, want %v", gotPrev.Year(), test.prevyear)
+		if gotPrev.Year() != testc.prevyear {
+			t.Errorf("got %v, want %v", gotPrev.Year(), testc.prevyear)
 		}
-		if gotPrev.Ordinal() != test.prevordinal {
-			t.Errorf("got %v, want %v", gotPrev.Ordinal(), test.prevordinal)
+		if gotPrev.Ordinal() != testc.prevordinal {
+			t.Errorf("got %v, want %v", gotPrev.Ordinal(), testc.prevordinal)
 		}
-		if gotNext.Year() != test.nextyear {
-			t.Errorf("got %v, want %v", gotNext.Year(), test.nextyear)
+		if gotNext.Year() != testc.nextyear {
+			t.Errorf("got %v, want %v", gotNext.Year(), testc.nextyear)
 		}
-		if gotNext.Ordinal() != test.nextordinal {
-			t.Errorf("got %v, want %v", gotNext.Ordinal(), test.nextordinal)
+		if gotNext.Ordinal() != testc.nextordinal {
+			t.Errorf("got %v, want %v", gotNext.Ordinal(), testc.nextordinal)
 		}
 	}
 }
 
 func TestFromString(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testt := []struct {
 		airac     string
 		effective string
 		year      int
@@ -201,33 +201,33 @@ func TestFromString(t *testing.T) {
 		{"", "", 0, 0, false},
 	}
 
-	for i, test := range tests {
-		i, test := i, test
-		t.Run(fmt.Sprintf("%02d_\"%s\"", i, test.airac), func(t *testing.T) {
+	for i, testc := range testt {
+		i, testc := i, testc
+		t.Run(fmt.Sprintf("%02d_\"%s\"", i, testc.airac), func(t *testing.T) {
 			t.Parallel()
-			got, err := FromString(test.airac)
-			if test.valid && err != nil {
-				t.Errorf("AIRAC \"%v\" did not parse: %v", test.airac, err)
+			got, err := FromString(testc.airac)
+			if testc.valid && err != nil {
+				t.Errorf("AIRAC \"%v\" did not parse: %v", testc.airac, err)
 				return
 			}
-			if !test.valid && err == nil {
-				t.Errorf("AIRAC \"%v\" parsed to %v, but should have raised an error!!", test.airac, got)
+			if !testc.valid && err == nil {
+				t.Errorf("AIRAC \"%v\" parsed to %v, but should have raised an error!!", testc.airac, got)
 				return
 			}
-			if !test.valid && err != nil {
-				t.Logf("Test string \"%s\" rightfully yields error: %v", test.airac, err)
+			if !testc.valid && err != nil {
+				t.Logf("Test string \"%s\" rightfully yields error: %v", testc.airac, err)
 				return
 			}
 
-			wantEffective, err := time.Parse(format, test.effective)
+			wantEffective, err := time.Parse(format, testc.effective)
 			if err != nil {
 				t.Fatalf("test case broken: %v", err)
 			}
-			if got.Year() != test.year ||
-				got.Ordinal() != test.ordinal ||
+			if got.Year() != testc.year ||
+				got.Ordinal() != testc.ordinal ||
 				!got.Effective().Equal(wantEffective) {
 				t.Errorf("AIRAC \"%v\", want %02d%02d (eff: %v), got %v",
-					test.airac, test.year%100, test.ordinal, test.effective, got.LongString())
+					testc.airac, testc.year%100, testc.ordinal, testc.effective, got.LongString())
 			}
 		})
 	}
@@ -321,14 +321,18 @@ func ExampleFromDate() {
 }
 
 func BenchmarkFromString(b *testing.B) {
+	r := make([]AIRAC, 0, b.N)
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		FromStringMust("2014")
+		r = append(r, FromStringMust("2014"))
 	}
 }
 
 func BenchmarkFromDate(b *testing.B) {
+	r := make([]AIRAC, 0, b.N)
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		FromDate(time.Now())
+		r = append(r, FromDate(time.Now()))
 	}
 }
 
