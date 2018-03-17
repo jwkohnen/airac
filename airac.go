@@ -33,10 +33,13 @@ var (
 	epoch = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
 )
 
-// AIRAC represents an Aeronautical Information Regulation And Control (AIRAC) cycle.
-type AIRAC uint16
+type (
+	// AIRAC represents an Aeronautical Information Regulation And Control (AIRAC) cycle.
+	AIRAC uint16
 
-type Airac = AIRAC
+	// Airac is a deprecated alias to AIRAC.
+	Airac = AIRAC
+)
 
 // Effective returns the effective date of this AIRAC cycle.
 func (a AIRAC) Effective() time.Time {
