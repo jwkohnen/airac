@@ -24,3 +24,5 @@ _testmain.go
 *.prof
 *.pb.go
 .idea
+cover.html
+cover.out
