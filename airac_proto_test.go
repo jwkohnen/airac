@@ -37,7 +37,7 @@ func TestProto(t *testing.T) {
 
 func TestProtoOverflow(t *testing.T) {
 	want := AIRAC(0)
-	p := proto.AiracMessage{math.MaxUint16 + 1}
+	p := proto.AiracMessage{Airac19010110: math.MaxUint16 + 1}
 	got := FromProto(p)
 	if got != want {
 		t.Errorf("Want %s, got %s", want, got)

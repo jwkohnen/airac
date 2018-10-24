@@ -36,5 +36,5 @@ func FromProto(a proto.AiracMessage) AIRAC {
 
 // Proto converts an AIRAC value to an AIRAC protobuffer message.
 func (a AIRAC) Proto() proto.AiracMessage {
-	return proto.AiracMessage{uint32(a)}
+	return proto.AiracMessage{Airac19010110: uint32(a)}
 }
