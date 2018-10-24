@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Johannes Kohnen <wjkohnen@users.noreply.github.com>
+ * Copyright (c) 2018 Johannes Kohnen <jwkohnen-github@ko-sys.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,8 @@ var (
 )
 
 type (
-	// AIRAC represents an Aeronautical Information Regulation And Control (AIRAC) cycle.
+	// AIRAC represents an Aeronautical Information Regulation And Control
+	// (AIRAC) cycle.
 	AIRAC uint16
 
 	// Airac is a deprecated alias to AIRAC.
@@ -57,19 +58,19 @@ func (a AIRAC) Ordinal() int {
 }
 
 // FromDate returns the AIRAC cycle that occurred at date. A date before the
-// internal epoch (1901-01-10) may return wrong data. The upper limit is
-// year 2192.
+// internal epoch (1901-01-10) may return wrong data. The upper limit is year
+// 2192.
 func FromDate(date time.Time) AIRAC {
 	a := date.Sub(epoch) / cycleDuration
 	return AIRAC(a)
 }
 
-// FromString returns an AIRAC cycle that matches the identifier <yyoo>,
-// i.e. the last two digits of the year and the ordinal, each with leading
-// zeros. This works for years between 1964 and 2063. Identifiers between
-// "6401" and "9913" are interpreted as AIRAC cycles between the years 1964
-// and 1999 inclusive. AIRAC cycles between "0001" and "6313" are
-// interpreted as AIRAC cycles between the years 2000 and 2063 inclusive.
+// FromString returns an AIRAC cycle that matches the identifier <yyoo>, i.e.
+// the last two digits of the year and the ordinal, each with leading zeros.
+// This works for years between 1964 and 2063. Identifiers between "6401" and
+// "9913" are interpreted as AIRAC cycles between the years 1964 and 1999
+// inclusive. AIRAC cycles between "0001" and "6313" are interpreted as AIRAC
+// cycles between the years 2000 and 2063 inclusive.
 func FromString(yyoo string) (AIRAC, error) {
 	year, ordinal, err := parseIdentifier(yyoo)
 	if err != nil {
@@ -131,15 +132,15 @@ func (a AIRAC) LongString() string {
 	)
 }
 
-// ByChrono is an []AIRAC wrapper, that satisfies sort.Interface and can be used
-// to chronologically sort AIRAC instances.
+// ByChrono is an []AIRAC wrapper, that satisfies sort.Interface and can be
+// used to chronologically sort AIRAC instances.
 type ByChrono []AIRAC
 
 // Len ist the number of elements in the collection.
 func (c ByChrono) Len() int { return len(c) }
 
-// Less reports whether the element with
-// index i should sort before the element with index j.
+// Less reports whether the element with index i should sort before the element
+// with index j.
 func (c ByChrono) Less(i, j int) bool { return c[i] < c[j] }
 
 // Swap swaps the elements with indexes i and j.

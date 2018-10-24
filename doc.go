@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Johannes Kohnen <wjkohnen@users.noreply.github.com>
+ * Copyright (c) 2018 Johannes Kohnen <jwkohnen-github@ko-sys.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ Licensed under the Apache License, Version 2.0.
 */
 package airac
 
-/* BUG(wjkohnen): The two digit year identifier of the FromString method will
+/* BUG(jwkohnen): The two digit year identifier of the FromString method will
 interpret the year as between 1964 and 2063. Other methods than FromString do
 not show this range restriction. This time window is more or less arbitrary and
 may change. */
 
-/* BUG(wjkohnen): This package assumes that AIRAC cycles are effective from
+/* BUG(jwkohnen): This package assumes that AIRAC cycles are effective from
 the effective date at 00:00:00 UTC until 27 days later at 23:59:59.999999999
 UTC. That is not correct:
 
@@ -49,11 +49,11 @@ ICAO DOC 8126, 6th Edition (2003), paragraph 2.6.4:
 
 However I won't "fix" this, because that may just confuse users. */
 
-/* BUG(wjkohnen): Calculations that include calendar dates before the internal
+/* BUG(jwkohnen): Calculations that include calendar dates before the internal
 epoch (1901-01-10; 63 years before the AIRAC system was introduced by the ICAO)
 and after year 2192 may silently produce wrong data. */
 
-/* BUG(wjkohnen): This package only provides calculations on effective dates,
+/* BUG(jwkohnen): This package only provides calculations on effective dates,
 not publication or reception dates etc. Although effective dates are clearly
 defined and are consistent at least between 1998 until 2020, the derivative
 dates changed historically.[citation needed] */

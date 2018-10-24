@@ -1,7 +1,7 @@
 // +build proto
 
 /*
- * Copyright (c) 2018 Johannes Kohnen <wjkohnen@users.noreply.github.com>
+ * Copyright (c) 2018 Johannes Kohnen <jwkohnen-github@ko-sys.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/wjkohnen/airac/proto"
+	"github.com/jwkohnen/airac/proto"
 )
 
 func TestProto(t *testing.T) {
