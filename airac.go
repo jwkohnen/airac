@@ -147,4 +147,4 @@ func (c ByChrono) Less(i, j int) bool { return c[i] < c[j] }
 func (c ByChrono) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
 
 // static assert
-var _ sort.Interface = ByChrono{}
+var _ sort.Interface = (ByChrono)(nil)
