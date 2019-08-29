@@ -326,6 +326,7 @@ func BenchmarkFromString(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		r = append(r, FromStringMust("2014"))
 	}
+	_ = r
 }
 
 func BenchmarkFromDate(b *testing.B) {
@@ -334,6 +335,7 @@ func BenchmarkFromDate(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		r = append(r, FromDate(time.Now()))
 	}
+	_ = r
 }
 
 func TestTypeAlias(t *testing.T) {
