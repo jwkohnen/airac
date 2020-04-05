@@ -30,7 +30,8 @@ const (
 )
 
 var (
-	epoch = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
+	// nolint:gochecknoglobals
+	_epoch = time.Date(1901, time.January, 10, 0, 0, 0, 0, time.UTC)
 )
 
 type (
@@ -44,7 +45,7 @@ type (
 
 // Effective returns the effective date of this AIRAC cycle.
 func (a AIRAC) Effective() time.Time {
-	return epoch.Add(time.Duration(a) * cycleDuration)
+	return _epoch.Add(time.Duration(a) * cycleDuration)
 }
 
 // Year returns the year for this AIRAC cycle's identifier.
@@ -61,7 +62,7 @@ func (a AIRAC) Ordinal() int {
 // internal epoch (1901-01-10) may return wrong data. The upper limit is year
 // 2192.
 func FromDate(date time.Time) AIRAC {
-	a := date.Sub(epoch) / cycleDuration
+	a := date.Sub(_epoch) / cycleDuration
 	return AIRAC(a)
 }
 

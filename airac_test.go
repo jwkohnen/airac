@@ -24,6 +24,7 @@ import (
 	"time"
 )
 
+// nolint:funlen
 func TestFromDate(t *testing.T) {
 	t.Parallel()
 	var airacTests = []struct {
@@ -163,6 +164,7 @@ func TestNextPrevious(t *testing.T) {
 	}
 }
 
+// nolint:funlen
 func TestFromString(t *testing.T) {
 	t.Parallel()
 	testt := []struct {
@@ -290,7 +292,7 @@ func TestOverflow(t *testing.T) {
 
 func TestLastAiracOfYear(t *testing.T) {
 	t.Parallel()
-	for year := epoch.Year(); year < 2193; year++ {
+	for year := _epoch.Year(); year < 2193; year++ {
 		year := year
 		t.Run(strconv.Itoa(year), func(t *testing.T) {
 			t.Parallel()
@@ -317,7 +319,6 @@ func ExampleFromDate() {
 	// At 2012-08-26 the current AIRAC cycle was 1209 (effective: 2012-08-23; expires: 2012-09-19).
 	//
 	// Short identifier: 1209
-
 }
 
 func BenchmarkFromString(b *testing.B) {
