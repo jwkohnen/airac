@@ -18,6 +18,19 @@ published in the ICAO Aeronautical Information Services Manual (DOC 8126;
 AN/872; 6th Edition; 2003). Test cases validate documented dates from 1998 until
 2020, including the rare case of a 14th cycle in the year 2020.
 
-A Java port is available at [github.com/jwkohnen/airac-java/](https://github.com/jwkohnen/airac-java/).
+
+## License
 
 Licensed under the Apache License, Version 2.0.
+
+## See also
+
+A Java port is available at [github.com/jwkohnen/airac-java/](https://github.com/jwkohnen/airac-java/).
+
+## Wikipedia
+
+Article on AIP / AIRAC cycles: https://en.wikipedia.org/wiki/Aeronautical_Information_Publication
+
+There are wiki macros in that article that do basically the same thing as this
+library. Though, this library does not trip over the case of 14 cycles per year
+(e. g. 1998 and 2020).
