@@ -1,4 +1,4 @@
-// +build proto
+// +build jwkohnen_airac_proto
 
 /*
  * Copyright (c) 2019 Johannes Kohnen <jwkohnen-github@ko-sys.com>
