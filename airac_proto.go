@@ -1,7 +1,7 @@
 // +build jwkohnen_airac_proto
 
 /*
- * Copyright (c) 2019 Johannes Kohnen <jwkohnen-github@ko-sys.com>
+ * Copyright (c) 2020 Johannes Kohnen <jwkohnen-github@ko-sys.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
