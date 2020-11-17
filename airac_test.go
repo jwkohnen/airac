@@ -18,6 +18,7 @@ package airac
 
 import (
 	"fmt"
+	"runtime"
 	"sort"
 	"strconv"
 	"testing"
@@ -27,6 +28,7 @@ import (
 // nolint:funlen
 func TestFromDate(t *testing.T) {
 	t.Parallel()
+
 	var airacTests = []struct {
 		date    string
 		year    int
@@ -132,22 +134,27 @@ func TestFromDate(t *testing.T) {
 		{"2021-12-29", 2021, 12},
 		{"2021-12-30", 2021, 13},
 
-		{"2023-01-25", 2022,13},
+		{"2023-01-25", 2022, 13},
 		{"2023-01-26", 2023, 1},
 
 		{"2023-12-27", 2023, 12},
 		{"2023-12-28", 2023, 13},
 	}
 
-	for _, testc := range airacTests {
-		testc := testc
-		t.Run(testc.date, func(t *testing.T) {
+	for _, tt := range airacTests {
+		tt := tt
+		t.Run(tt.date, func(t *testing.T) {
 			t.Parallel()
-			tdate, _ := time.Parse(format, testc.date)
-			got := FromDate(tdate)
-			if got.Year() != testc.year || got.Ordinal() != testc.ordinal {
+
+			date, err := time.Parse(format, tt.date)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			got := FromDate(date)
+			if got.Year() != tt.year || got.Ordinal() != tt.ordinal {
 				t.Errorf("Date %s (%s): want: %02d%02d, got: %s",
-					testc.date, tdate.Weekday(), testc.year%100, testc.ordinal, got.String())
+					tt.date, date.Weekday(), tt.year%100, tt.ordinal, got.String())
 			}
 		})
 	}
@@ -157,31 +164,35 @@ func TestNextPrevious(t *testing.T) {
 	t.Parallel()
 	testt := []struct {
 		date        string
-		prevyear    int
-		prevordinal int
-		nextyear    int
-		nextordinal int
+		prevYear    int
+		prevOrdinal int
+		nextYear    int
+		nextOrdinal int
 	}{
 		{"2006-01-20", 2005, 13, 2006, 2},
 		{"2021-01-01", 2020, 13, 2021, 1},
 	}
-	for _, testc := range testt {
-		tdate, _ := time.Parse(format, testc.date)
-		got := FromDate(tdate)
+	for _, tt := range testt {
+		date, err := time.Parse(format, tt.date)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		got := FromDate(date)
 		gotPrev := got - 1
 		gotNext := got + 1
 
-		if gotPrev.Year() != testc.prevyear {
-			t.Errorf("got %v, want %v", gotPrev.Year(), testc.prevyear)
+		if gotPrev.Year() != tt.prevYear {
+			t.Errorf("got %v, want %v", gotPrev.Year(), tt.prevYear)
 		}
-		if gotPrev.Ordinal() != testc.prevordinal {
-			t.Errorf("got %v, want %v", gotPrev.Ordinal(), testc.prevordinal)
+		if gotPrev.Ordinal() != tt.prevOrdinal {
+			t.Errorf("got %v, want %v", gotPrev.Ordinal(), tt.prevOrdinal)
 		}
-		if gotNext.Year() != testc.nextyear {
-			t.Errorf("got %v, want %v", gotNext.Year(), testc.nextyear)
+		if gotNext.Year() != tt.nextYear {
+			t.Errorf("got %v, want %v", gotNext.Year(), tt.nextYear)
 		}
-		if gotNext.Ordinal() != testc.nextordinal {
-			t.Errorf("got %v, want %v", gotNext.Ordinal(), testc.nextordinal)
+		if gotNext.Ordinal() != tt.nextOrdinal {
+			t.Errorf("got %v, want %v", gotNext.Ordinal(), tt.nextOrdinal)
 		}
 	}
 }
@@ -189,6 +200,7 @@ func TestNextPrevious(t *testing.T) {
 // nolint:funlen
 func TestFromString(t *testing.T) {
 	t.Parallel()
+
 	testt := []struct {
 		airac     string
 		effective string
@@ -225,33 +237,35 @@ func TestFromString(t *testing.T) {
 		{"", "", 0, 0, false},
 	}
 
-	for i, testc := range testt {
-		i, testc := i, testc
-		t.Run(fmt.Sprintf("%02d_\"%s\"", i, testc.airac), func(t *testing.T) {
+	for i, tt := range testt {
+		i, tt := i, tt
+		t.Run(fmt.Sprintf("%02d_\"%s\"", i, tt.airac), func(t *testing.T) {
 			t.Parallel()
-			got, err := FromString(testc.airac)
-			if testc.valid && err != nil {
-				t.Errorf("AIRAC \"%v\" did not parse: %v", testc.airac, err)
+
+			got, err := FromString(tt.airac)
+			if tt.valid && err != nil {
+				t.Errorf("AIRAC \"%v\" did not parse: %v", tt.airac, err)
 				return
 			}
-			if !testc.valid && err == nil {
-				t.Errorf("AIRAC \"%v\" parsed to %v, but should have raised an error!!", testc.airac, got)
+			if !tt.valid && err == nil {
+				t.Errorf("AIRAC \"%v\" parsed to %v, but should have raised an error!!", tt.airac, got)
 				return
 			}
-			if !testc.valid && err != nil {
-				t.Logf("Test string \"%s\" rightfully yields error: %v", testc.airac, err)
+			if !tt.valid && err != nil {
+				t.Logf("Test string \"%s\" rightfully yields error: %v", tt.airac, err)
 				return
 			}
 
-			wantEffective, err := time.Parse(format, testc.effective)
+			wantEffective, err := time.Parse(format, tt.effective)
 			if err != nil {
 				t.Fatalf("test case broken: %v", err)
 			}
-			if got.Year() != testc.year ||
-				got.Ordinal() != testc.ordinal ||
+
+			if got.Year() != tt.year ||
+				got.Ordinal() != tt.ordinal ||
 				!got.Effective().Equal(wantEffective) {
 				t.Errorf("AIRAC \"%v\", want %02d%02d (eff: %v), got %v",
-					testc.airac, testc.year%100, testc.ordinal, testc.effective, got.LongString())
+					tt.airac, tt.year%100, tt.ordinal, tt.effective, got.LongString())
 			}
 		})
 	}
@@ -259,16 +273,20 @@ func TestFromString(t *testing.T) {
 
 func TestFromStringZeroOrdinal(t *testing.T) {
 	t.Parallel()
+
 	for i := 0; i < 100; i++ {
 		i := i
+
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
+
 			s := fmt.Sprintf("%02d00", i)
 			got, err := FromString(s)
 			if err == nil {
 				t.Errorf("Identifier %s yields AIRAC cycle %s.", s, got)
 				return
 			}
+
 			t.Logf("Identifier %s rightfully returns error: %v", s, err)
 		})
 	}
@@ -276,6 +294,7 @@ func TestFromStringZeroOrdinal(t *testing.T) {
 
 func TestFromStringMust(t *testing.T) {
 	t.Parallel()
+
 	got := FromStringMust("1201")
 	want := "1201"
 	if got.String() != want {
@@ -284,6 +303,7 @@ func TestFromStringMust(t *testing.T) {
 
 	func() {
 		invalid := "1614"
+
 		defer func() {
 			r := recover()
 			if r == nil {
@@ -299,11 +319,14 @@ func TestFromStringMust(t *testing.T) {
 
 func TestOverflow(t *testing.T) {
 	t.Parallel()
+
 	// there will be an overflow after April 4th, 2193
 	last := time.Date(2193, time.April, 4, 0, 0, 0, 0, time.UTC)
+
 	for a := AIRAC(1); a.Effective().Before(last); a++ {
 		prev := a - 1
 		diff := a.Effective().Sub(prev.Effective())
+
 		if diff != 28*24*time.Hour {
 			t.Errorf("Time difference between cycle (%s) %d/%02d and (%s) %d/%02d wrong, want 28 days, got %s.",
 				a.LongString(), a.Year(), a.Ordinal(), prev.LongString(), prev.Year(), prev.Ordinal(), diff)
@@ -314,10 +337,13 @@ func TestOverflow(t *testing.T) {
 
 func TestLastAiracOfYear(t *testing.T) {
 	t.Parallel()
+
 	for year := _epoch.Year(); year < 2193; year++ {
 		year := year
+
 		t.Run(strconv.Itoa(year), func(t *testing.T) {
 			t.Parallel()
+
 			airac := FromDate(time.Date(year, time.December, 31, 0, 0, 0, 0, time.UTC))
 			if airac.Year() != year {
 				t.Errorf("want %d, got %d", year, airac.Year())
@@ -344,25 +370,30 @@ func ExampleFromDate() {
 }
 
 func BenchmarkFromString(b *testing.B) {
-	r := make([]AIRAC, 0, b.N)
+	r := make([]AIRAC, b.N)
 	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
-		r = append(r, FromStringMust("2014"))
+		r[i] = FromStringMust("2014")
 	}
-	_ = r
+
+	runtime.KeepAlive(&r)
 }
 
 func BenchmarkFromDate(b *testing.B) {
-	r := make([]AIRAC, 0, b.N)
+	r := make([]AIRAC, b.N)
 	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
-		r = append(r, FromDate(time.Now()))
+		r[i] = FromDate(time.Now())
 	}
-	_ = r
+
+	runtime.KeepAlive(&r)
 }
 
 func TestTypeAlias(t *testing.T) {
 	t.Parallel()
+
 	lower := Airac(42)
 	upper := AIRAC(42)
 	if lower != upper {
