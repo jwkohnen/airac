@@ -238,6 +238,10 @@ func TestFromString(t *testing.T) {
 
 		// found by fuzzer (case testdata/corpus/FuzzFromString/44ea5456f4caf7ee4b0cb896e30cb4f52cd0e65cd3c1843393c5a535f97c7a6e)
 		{"+911", "", 0, 0, false},
+
+
+		// found by fuzzer (case testdata/corpus/FuzzFromString/cde16d0f1e64e24bd633e50af05f0e1c4b74934119ed36156d64e32768cbcc4e)
+		{" 7807", "1978-07-13", 1978, 07, true},
 	}
 
 	for i, tt := range testt {

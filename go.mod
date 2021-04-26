@@ -1,3 +1,3 @@
 module github.com/jwkohnen/airac
 
-go 1.12
+go 1.16
