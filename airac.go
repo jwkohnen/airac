@@ -93,6 +93,11 @@ func parseIdentifier(yyoo string) (year, ordinal int, err error) {
 	if len(yyoo) != 4 {
 		return 0, 0, fmt.Errorf("illegal AIRAC id %q", yyoo)
 	}
+
+	if sign := yyoo[0]; sign == '+' || sign == '-' {
+		return 0, 0, fmt.Errorf("illegal AIRAC id %q", yyoo)
+	}
+
 	yyooInt, err := strconv.Atoi(yyoo)
 	if err != nil {
 		return 0, 0, fmt.Errorf("illegal AIRAC id %q", yyoo)

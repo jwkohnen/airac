@@ -235,6 +235,9 @@ func TestFromString(t *testing.T) {
 		{"a", "", 0, 0, false},
 		{"aa", "", 0, 0, false},
 		{"", "", 0, 0, false},
+
+		// found by fuzzer (case testdata/corpus/FuzzFromString/44ea5456f4caf7ee4b0cb896e30cb4f52cd0e65cd3c1843393c5a535f97c7a6e)
+		{"+911", "", 0, 0, false},
 	}
 
 	for i, tt := range testt {
