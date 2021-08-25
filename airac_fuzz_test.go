@@ -1,4 +1,4 @@
-//+build go.dev.fuzz
+// +build gofuzzbeta
 
 package airac
 
