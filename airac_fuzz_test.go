@@ -1,4 +1,4 @@
-// +build gofuzzbeta
+// +build go1.18
 
 package airac
 
